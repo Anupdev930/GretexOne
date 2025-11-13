@@ -4,87 +4,8 @@
   <base target="_top">
   <title>Gretex One - Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <style>
-    /* All your CSS styles are unchanged... */
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #f0f4f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      color: #333;
-    }
-    #main-content { width: 100%; }
-    #login-container {
-      display: flex;
-      width: 900px;
-      max-width: 90%;
-      margin: 20px;
-      background: #ffffff;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-    .login-panel-left {
-      flex-basis: 40%;
-      background: linear-gradient(135deg, #3b439c, #4a5a9b);
-      color: white;
-      padding: 60px 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-    }
-    .login-panel-left h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; }
-    .login-panel-left p { font-size: 1rem; color: rgba(255, 255, 255, 0.8); line-height: 1.6; }
-    .login-panel-right {
-      flex-basis: 60%;
-      padding: 60px 50px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .login-panel-right h2 { font-size: 2rem; font-weight: 600; color: #333; margin-bottom: 10px; }
-    .login-panel-right h2 span { font-size: 1.5rem; }
-    .login-panel-right p { color: #777; margin-bottom: 30px; font-size: 1rem; }
-    #login-form label { font-size: 0.9rem; font-weight: 500; color: #555; margin-bottom: 8px; display: block; }
-    #login-form input[type="text"],
-    #login-form input[type="password"] {
-      width: 100%;
-      padding: 14px 18px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-family: 'Poppins', sans-serif;
-      margin-bottom: 20px;
-      transition: border-color 0.3s;
-    }
-    #login-form input:focus { outline: none; border-color: #4a5a9b; }
-    #login-button {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 10px;
-      background: #4a5a9b;
-      color: white;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    #login-button:hover { background: #3b439c; }
-    #login-button:disabled { background: #ccc; cursor: not-allowed; }
-    .forgot-password { display: block; text-align: center; margin-top: 20px; color: #777; text-decoration: none; font-size: 0.9rem; }
-    .forgot-password:hover { text-decoration: underline; }
-    #message { text-align: center; margin-top: 15px; font-size: 0.9rem; }
-    .loading-message { color: #555; }
-    .error-message { color: #d93025; font-weight: 500; }
-    .hidden { display: none; }
-  </style>
+  <link rel="stylesheet" href="styles.css">
+  
 </head>
 
 <body>
