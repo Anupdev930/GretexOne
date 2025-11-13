@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <title>Gretex One - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <style>
+    /* All your CSS styles are unchanged... */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+    #main-content { width: 100%; }
+    #login-container {
+      display: flex;
+      width: 900px;
+      max-width: 90%;
+      margin: 20px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    .login-panel-left {
+      flex-basis: 40%;
+      background: linear-gradient(135deg, #3b439c, #4a5a9b);
+      color: white;
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+    .login-panel-left h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; }
+    .login-panel-left p { font-size: 1rem; color: rgba(255, 255, 255, 0.8); line-height: 1.6; }
+    .login-panel-right {
+      flex-basis: 60%;
+      padding: 60px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .login-panel-right h2 { font-size: 2rem; font-weight: 600; color: #333; margin-bottom: 10px; }
+    .login-panel-right h2 span { font-size: 1.5rem; }
+    .login-panel-right p { color: #777; margin-bottom: 30px; font-size: 1rem; }
+    #login-form label { font-size: 0.9rem; font-weight: 500; color: #555; margin-bottom: 8px; display: block; }
+    #login-form input[type="text"],
+    #login-form input[type="password"] {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      margin-bottom: 20px;
+      transition: border-color 0.3s;
+    }
+    #login-form input:focus { outline: none; border-color: #4a5a9b; }
+    #login-button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #4a5a9b;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    #login-button:hover { background: #3b439c; }
+    #login-button:disabled { background: #ccc; cursor: not-allowed; }
+    .forgot-password { display: block; text-align: center; margin-top: 20px; color: #777; text-decoration: none; font-size: 0.9rem; }
+    .forgot-password:hover { text-decoration: underline; }
+    #message { text-align: center; margin-top: 15px; font-size: 0.9rem; }
+    .loading-message { color: #555; }
+    .error-message { color: #d93025; font-weight: 500; }
+    .hidden { display: none; }
+  </style>
+</head>
+
+<body>
+  <div id="main-content">
+    <div id="login-container">
+      <div class="login-panel-left">
+        <h1>Gretex One</h1>
+        <p>A secure space to manage all your applications and tasks effortlessly. Sign in to access your personalized dashboard.</p>
+      </div>
+      <div class="login-panel-right">
+        <h2>Welcome Back <span>👋</span></h2>
+        <p>Please sign in to your account.</p>
+        <form id="login-form">
+          <label for="userid">User ID</label>
+          <input type="text" id="userid" name="userid" required>
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+          <div id="message"></div>
+          <button type="submit" id="login-button">Sign In</button>
+          <a href="#" class="forgot-password">Forgot Password?</a>
+        </form>
+      </div>
+    </div>
+  </div> 
+  
+  <script>
+    // ******* IMPORTANT *******
+    // PASTE YOUR NEW APPS SCRIPT WEB APP URL HERE
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJ509n_LiOwk6OUDckqIpsrH8tQWIZacpR5tpB1XYjRv6UjKAZYx2roFN8Q1clZd8Dqw/exec"; 
+    // *************************
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const loginForm = document.getElementById("login-form");
+      
+      // Check if user is already logged in
+      if (sessionStorage.getItem("gretexUser")) {
+        window.location.href = "App_access.html"; // Redirect to dashboard
+      }
+      
+      loginForm.addEventListener("submit", function(e) {
+        e.preventDefault(); 
+        
+        const loginButton = document.getElementById("login-button");
+        const messageDiv = document.getElementById("message");
+        
+        messageDiv.innerHTML = "Signing in...";
+        messageDiv.className = "loading-message";
+        loginButton.disabled = true;
+        
+        // Get data from the form
+        const credentials = {
+          userId: document.getElementById("userid").value,
+          password: document.getElementById("password").value
+        };
+        
+        // This is the data we will send to the API
+        const requestData = {
+          action: "userLogin",
+          params: credentials
+        };
+
+        // ** NEW: Send data using fetch() **
+        fetch(SCRIPT_URL, {
+          method: 'POST',
+          // Note: Using 'text/plain' is a common workaround for simple Apps Script POSTs
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+          body: JSON.stringify(requestData)
+        })
+        .then(res => res.json()) // Parse the JSON response from Apps Script
+        .then(response => {
+          // This is our new "onLoginSuccess" logic
+          if (response.status === "success") {
+            // 1. Save user data to session
+            sessionStorage.setItem("gretexUser", JSON.stringify(response.data));
+            
+            // 2. Redirect to the dashboard FILE
+            window.location.href = "App_access.html";
+          } else {
+            // Show the error message from the API
+            messageDiv.innerHTML = response.data.message;
+            messageDiv.className = "error-message";
+            loginButton.disabled = false;
+          }
+        })
+        .catch(error => {
+          // This is our new "onLoginFailure" logic
+          console.error("Fetch Error:", error);
+          messageDiv.innerHTML = "Error: " + error.message;
+          messageDiv.className = "error-message";
+          loginButton.disabled = false;
+        });
+      }); 
+    });
+  </script>
+
+</body>
+</html>
