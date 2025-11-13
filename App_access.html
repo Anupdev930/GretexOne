@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <title>Gretex One - Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* All your CSS styles are unchanged... */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      flex-basis: 260px;
+      flex-shrink: 0;
+      background: #ffffff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      padding: 25px 20px;
+    }
+    .sidebar-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    .sidebar-header h2 { font-size: 1.4rem; font-weight: 600; color: #3b439c; }
+    #user-name { font-size: 0.9rem; font-weight: 500; color: #555; margin-top: 8px; }
+    .nav-links { flex-grow: 1; list-style: none; margin: 0; padding: 0; }
+    .nav-links li a {
+      display: block;
+      padding: 14px 20px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      color: #444;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .nav-links li a:hover,
+    .nav-links li a.active { background-color: #f0f4f8; color: #3b439c; }
+    .sidebar-footer { margin-top: 20px; }
+    #logout-button {
+      width: 100%;
+      padding: 14px 20px;
+      background: #fbeeee;
+      color: #d93025;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: left;
+      transition: background-color 0.2s;
+    }
+    #logout-button:hover { background: #f8d7da; }
+    .main-content {
+      flex-grow: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+    .main-content h1 { font-weight: 600; font-size: 2rem; margin-bottom: 30px; }
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  D    gap: 25px;
+    }
+    .app-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border-radius: 15px;
+      padding: 30px 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      text-decoration: none;
+      color: #333;
+      transition: transform 0.2s, box-shadow 0.2s;
+      min-height: 150px;
+    }
+    .app-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+    .app-icon { font-size: 3rem; margin-bottom: 15px; }
+    .app-name { font-size: 1.1rem; font-weight: 500; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>Gretex One</h2>
+      <div id="user-name">Loading...</div>
+    </div>
+    <ul id="nav-links-list" class="nav-links">
+          </ul>
+    <div class="sidebar-footer">
+      <button id="logout-button">Logout</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h1>Home</h1>
+    <div id="app-container" class="app-grid">
+          </div>
+  </div>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const userString = sessionStorage.getItem("gretexUser");
+      
+      if (!userString) {
+        window.location.href = "index.html"; // Redirect to login file
+        return; 
+      }
+      
+      const user = JSON.parse(userString);
+      
+      document.getElementById("user-name").innerText = user.name;
+      
+      // ** NEW: appMap links to .html files **
+      const appMap = {
+        "App1_CreditCard": { name: "Credit Card", page: "creditcard", icon: "💳" },
+        "App2_Bills": { name: "Bills", page: "bills", icon: "🧾" },
+        "App3_MobileBills": { name: "Mobile Bills", page: "mobilebills", icon: "📱" }
+      };
+      
+      const appContainer = document.getElementById("app-container");
+      const navLinksList = document.getElementById("nav-links-list");
+      
+      // Add "Home" (Dashboard) link
+      const homeLink = document.createElement("li");
+      // ** NEW: Link to the file **
+      homeLink.innerHTML = `<a href="App_access.html" class="active">🏠 Home</a>`;
+      navLinksList.appendChild(homeLink);
+
+      if (user.apps.length === 0) {
+        appContainer.innerHTML = "<p>You do not have access to any applications.</p>";
+      } else {
+        user.apps.forEach(appKey => {
+          const app = appMap[appKey]; 
+          
+          if (app) {
+            // ** NEW: Create sidebar link to .html file **
+            const navLink = document.createElement("li");
+            navLink.innerHTML = `
+              <a href="${app.page}.html"> 
+                ${app.icon} ${app.name}
+              </a>
+            `;
+            navLinksList.appendChild(navLink);
+
+            // ** NEW: Create App card link to .html file **
+            const cardLink = document.createElement("a");
+            cardLink.className = "app-card";
+            cardLink.href = `${app.page}.html`; 
+            
+            cardLink.innerHTML = `
+              <div class="app-icon">${app.icon}</div>
+              <div class="app-name">${app.name}</div>
+            `;
+            
+            appContainer.appendChild(cardLink);
+          }
+        });
+      }
+    });
+    
+    // Logout button
+    document.getElementById("logout-button").addEventListener("click", function() {
+      sessionStorage.removeItem("gretexUser"); 
+      window.location.href = "index.html"; // ** NEW: Redirect to login file **
+    });
+  </script>
+
+</body>
+</html>
